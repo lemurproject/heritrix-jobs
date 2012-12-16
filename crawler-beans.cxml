@@ -33,14 +33,12 @@
  <bean id="simpleOverrides" class="org.springframework.beans.factory.config.PropertyOverrideConfigurer">
   <property name="properties">
    <value>
-metadata.description=job-test-01
-metadata.jobName=job-test-01
+metadata.description=tmp
+metadata.jobName=tmp
    </value>
   </property>
  </bean>
 
-
-  
  <!-- overrides from declared <prop> elements, more easily allowing
       multiline values or even declared beans -->
  <bean id="longerOverrides" class="org.springframework.beans.factory.config.PropertyOverrideConfigurer">
@@ -121,7 +119,7 @@ metadata.jobName=job-test-01
  <!-- SCOPE: rules for which discovered URIs to crawl; order is very 
       important because last decision returned other than 'NONE' wins. -->
  <bean id="scope" class="org.archive.modules.deciderules.DecideRuleSequence">
-  <property name="logToFile" value="true" />
+  <property name="logToFile" value="false" />
   <property name="rules">
    <list>
     <!-- Begin by REJECTing all... -->
@@ -130,7 +128,7 @@ metadata.jobName=job-test-01
     <ref bean="acceptSurts" />
     <!-- ...but REJECT those more than a configured link-hop-count from start... -->
     <bean class="org.archive.modules.deciderules.TooManyHopsDecideRule">
-        <property name="maxHops" value="6" />
+        <property name="maxHops" value="9" />
     </bean>
     <!-- ...but ACCEPT those more than a configured link-hop-count from start... -->
     <bean class="org.archive.modules.deciderules.TransclusionDecideRule">
@@ -365,7 +363,7 @@ metadata.jobName=job-test-01
   <property name="compress" value="true" />
   <property name="prefix" value="cw12pp" />
   <!-- <property name="suffix" value="${HOSTNAME}" /> -->
-  <property name="maxFileSizeBytes" value="10000000" />
+  <property name="maxFileSizeBytes" value="1048576000" />
   <!-- <property name="poolMaxActive" value="1" /> -->
   <!-- <property name="MaxWaitForIdleMs" value="500" /> -->
   <!-- <property name="skipIdenticalDigests" value="false" /> -->
@@ -389,7 +387,7 @@ metadata.jobName=job-test-01
   <property name="delayFactor" value="5.0" />
   <property name="minDelayMs" value="5000" />
   <property name="respectCrawlDelayUpToSeconds" value="300" />
-  <!-- <property name="maxDelayMs" value="30000" /> -->
+  <property name="maxDelayMs" value="10000" />
   <!-- <property name="maxPerHostBandwidthUsageKbSec" value="0" /> -->
  </bean>
  <!-- <bean id="rescheduler" class="org.archive.crawler.postprocessor.ReschedulingProcessor">
@@ -414,7 +412,7 @@ metadata.jobName=job-test-01
  <!-- CRAWLCONTROLLER: Control interface, unifying context -->
  <bean id="crawlController" 
    class="org.archive.crawler.framework.CrawlController">
-  <!-- <property name="maxToeThreads" value="25" /> -->
+  <property name="maxToeThreads" value="250" />
   <!-- <property name="pauseAtStart" value="true" /> -->
   <!-- <property name="runWhileEmpty" value="false" /> -->
   <!-- <property name="recorderInBufferBytes" value="524288" /> -->
@@ -566,7 +564,8 @@ metadata.jobName=job-test-01
  <!-- CHECKPOINTSERVICE: checkpointing assistance -->
  <bean id="checkpointService" 
    class="org.archive.crawler.framework.CheckpointService">
-  <!-- <property name="checkpointIntervalMinutes" value="-1"/> -->
+   <-- Automatic checkpoints every day -->
+  <property name="checkpointIntervalMinutes" value="1440"/>
   <!-- <property name="checkpointsDir" value="checkpoints"/> -->
  </bean>
  
@@ -577,21 +576,23 @@ metadata.jobName=job-test-01
   -->
   
  <!-- CANONICALIZATION POLICY -->
- <!--
  <bean id="canonicalizationPolicy" 
    class="org.archive.modules.canonicalize.RulesCanonicalizationPolicy">
    <property name="rules">
     <list>
+    <!--
      <bean class="org.archive.modules.canonicalize.LowercaseRule" />
+    -->
      <bean class="org.archive.modules.canonicalize.StripUserinfoRule" />
+    <!--
      <bean class="org.archive.modules.canonicalize.StripWWWNRule" />
+    -->
      <bean class="org.archive.modules.canonicalize.StripSessionIDs" />
      <bean class="org.archive.modules.canonicalize.StripSessionCFIDs" />
      <bean class="org.archive.modules.canonicalize.FixupQueryString" />
     </list>
   </property>
  </bean>
- -->
  
 
  <!-- QUEUE ASSIGNMENT POLICY -->
